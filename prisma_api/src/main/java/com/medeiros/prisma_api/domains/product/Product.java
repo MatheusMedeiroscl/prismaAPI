@@ -30,4 +30,10 @@ public class Product {
     @Column(name = "sale_price")
     private BigDecimal salePrice;
 
+    public Product(ProductRequestDTO dto) {
+        this.name = dto.name();
+        this.category = dto.category();
+        this.costPrice = dto.costPrice();
+        this.salePrice = dto.salePrice();
+    }
 }
