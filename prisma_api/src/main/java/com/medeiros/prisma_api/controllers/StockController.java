@@ -27,11 +27,14 @@ public class StockController {
 
     @PostMapping("/{id}")
     public ResponseEntity<StockResponseDTO> ajustOrder (@PathVariable Long id, @RequestBody @Valid StockRequestDTO dto){
+       StockResponseDTO response = null;
+        if (dto.quantity() != null) {
+             response = this.service.updateOrder(id, dto);
+        }
+        if (dto.status() != null) {
+             response = this.service.confirm(id);
+        }
 
-        if (dto.quantity() != null) service.updateOrder(id, dto);
-        if (dto.status() != null) service.updateOrder(id, dto);
-
-        StockResponseDTO responseDTO = this.service.findById(id);
-        return ResponseEntity.ok().body(responseDTO);
+        return ResponseEntity.ok().body(response);
     };
 }

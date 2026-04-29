@@ -1,5 +1,6 @@
 package com.medeiros.prisma_api.services;
 
+import com.medeiros.prisma_api.configs.security.TokenService;
 import com.medeiros.prisma_api.domains.Movements.Movement;
 import com.medeiros.prisma_api.domains.Movements.MovementRequestDTO;
 import com.medeiros.prisma_api.domains.Movements.MovementResponseDTO;
@@ -8,6 +9,8 @@ import com.medeiros.prisma_api.domains.product.Product;
 import com.medeiros.prisma_api.repositories.MovementsRepository;
 import com.medeiros.prisma_api.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +20,7 @@ public class MovementService {
     private final MovementsRepository movementsRepository;
     private final StockService stockService;
     private final ProductRepository productRepository;
+    public static Logger log =  LoggerFactory.getLogger(MovementService.class);
 
     public MovementService(MovementsRepository movementsRepository, StockService stockService, ProductRepository productRepository) {
         this.movementsRepository = movementsRepository;
@@ -40,6 +44,7 @@ public class MovementService {
     @Transactional
     public MovementResponseDTO create (MovementRequestDTO dto){
         Product product = findProduct(dto.idProduct());
+        log.info(String.valueOf(dto.type()));
 
         // salva a movimentação
         Movement movement = new Movement(dto, product);

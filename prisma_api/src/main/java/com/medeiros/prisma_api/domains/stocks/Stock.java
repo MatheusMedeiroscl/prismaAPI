@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,13 +29,19 @@ public class Stock {
     private Integer quantity;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StockStatus status;
+
+   @Column(name = "createAt")
+   LocalDate createdAt = LocalDate.now();
+
 
     public Stock(Product product, Integer quantity, StockStatus status) {
         this.product = product;
         this.quantity = quantity;
         this.status = status;
     }
+
 
 }

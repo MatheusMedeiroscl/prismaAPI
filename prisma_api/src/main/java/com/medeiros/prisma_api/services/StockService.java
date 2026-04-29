@@ -1,7 +1,6 @@
 package com.medeiros.prisma_api.services;
 
 import com.medeiros.prisma_api.domains.Movements.Movement;
-import com.medeiros.prisma_api.domains.Movements.MovementRequestDTO;
 import com.medeiros.prisma_api.domains.Movements.MovementType;
 import com.medeiros.prisma_api.domains.product.Product;
 import com.medeiros.prisma_api.domains.stocks.Stock;
@@ -10,6 +9,8 @@ import com.medeiros.prisma_api.domains.stocks.StockResponseDTO;
 import com.medeiros.prisma_api.domains.stocks.StockStatus;
 import com.medeiros.prisma_api.repositories.MovementsRepository;
 import com.medeiros.prisma_api.repositories.StockRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public class StockService {
     private final StockRepository repository;
     private final MovementsRepository movementsRepository;
+    public static Logger log =  LoggerFactory.getLogger(StockService.class);
 
     public StockService(StockRepository repository, MovementsRepository movementsRepository) {
         this.repository = repository;
@@ -38,11 +40,14 @@ public class StockService {
 
     public void addQuantity(Product product, Integer quantity, MovementType status) {
         Stock stock = repository.findByProductId(product.getId());
+        log.info("MOVEMENT TYPE RECEBIDO:" + status);
 
-        if (stock == null) {
+        if (stock == null || status == MovementType.ORDER) {
             stock = new Stock(product, quantity, StockStatus.from(status));
+            log.info("MOVEMENT TYPE ENVIADO:" + StockStatus.from(status));
         } else {
             stock.setQuantity(stock.getQuantity() + quantity);
+            stock.setStatus(StockStatus.AVAILABLE);
         }
 
         repository.save(stock);
@@ -51,9 +56,12 @@ public class StockService {
 
     public void removeQuantity(Product product, Integer quantity,  MovementType status) {
         Stock stock = repository.findByProductId(product.getId());
+        log.info("MOVEMENT TYPE RECEBIDO:" + status);
 
         if (stock == null) {
             stock = new Stock(product, quantity, StockStatus.from(status));
+            log.info("MOVEMENT TYPE ENVIADO:" + StockStatus.from(status));
+
         } else {
             stock.setQuantity(stock.getQuantity() - quantity);
         }
@@ -62,19 +70,31 @@ public class StockService {
     }
 
 
-    public void confirm(Long id) {
+    public StockResponseDTO confirm(Long id) {
         Stock stock = this.repository.findById(id).orElseThrow(() ->
                 new RuntimeException("STOCK LINE NOT FOUNDED")
         );
 
-        stock.setStatus(StockStatus.AVAILABLE);
-        repository.save(stock);
+        Stock stockAvailable = this.repository.findByProductIdAndStatus(stock.getProduct().getId(), StockStatus.AVAILABLE);
+        if (stockAvailable != null){
+            stockAvailable.setQuantity(stock.getQuantity() + stockAvailable.getQuantity());
+            repository.save(stockAvailable);
+
+            this.repository.delete(stock);
+        }else {
+            stock.setStatus(StockStatus.AVAILABLE);
+            repository.save(stock);
+        }
+
 
         Movement movement = new Movement(stock.getProduct(), stock.getQuantity(), MovementType.IN);
         movementsRepository.save(movement);
+
+        return new StockResponseDTO(stock);
     };
 
-    public void updateOrder(Long id, StockRequestDTO dto){
+
+    public StockResponseDTO updateOrder(Long id, StockRequestDTO dto){
         Stock stock = this.repository.findById(id).orElseThrow(() ->
                 new RuntimeException("STOCK LINE NOT FOUNDED")
         );
@@ -85,7 +105,8 @@ public class StockService {
         stock.setQuantity(dto.quantity());
         repository.save(stock);
 
-        Movement movement = new Movement(stock.getProduct(), difference, MovementType.IN);
+        Movement movement = new Movement(stock.getProduct(), Math.abs(difference), type);
         movementsRepository.save(movement);
+        return new StockResponseDTO(stock);
     };
 }

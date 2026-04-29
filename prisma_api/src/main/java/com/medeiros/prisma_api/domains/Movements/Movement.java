@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter @Setter
@@ -23,11 +24,15 @@ public class Movement {
     @JoinColumn(name = "id_product", nullable = false)
     private Product product;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "movement_type", nullable = false)
     private MovementType movementType;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "createAt")
+    LocalDate createdAt = LocalDate.now();
 
     public Movement(MovementRequestDTO dto, Product product) {
         this.product = product;
@@ -41,8 +46,7 @@ public class Movement {
         this.movementType = movementType;
     }
 
-    @PrePersist
-    public void prePersist() {
-        LocalDateTime createdAt = LocalDateTime.now();
-    }
+
+
+
 }

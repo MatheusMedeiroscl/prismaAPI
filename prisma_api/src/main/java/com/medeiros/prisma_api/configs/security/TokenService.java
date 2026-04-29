@@ -50,7 +50,6 @@ public class TokenService {
                     .getSubject();
 
         }catch (JWTVerificationException exception){
-            log.error("THE TOKEN IS NOT VALID");
             return null;
         }
     }
