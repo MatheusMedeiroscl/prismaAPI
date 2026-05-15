@@ -85,8 +85,6 @@ public class StockService {
             stock.setStatus(StockStatus.AVAILABLE);
             repository.save(stock);
         }
-
-
         Movement movement = new Movement(stock.getProduct(), stock.getQuantity(), MovementType.IN);
         movementsRepository.save(movement);
 
@@ -99,7 +97,7 @@ public class StockService {
                 new RuntimeException("STOCK LINE NOT FOUNDED")
         );
 
-        Integer difference = dto.quantity() - stock.getQuantity();
+        int difference = dto.quantity() - stock.getQuantity();
         MovementType type = difference > 0 ? MovementType.IN : MovementType.ADJUSTMENT;
 
         stock.setQuantity(dto.quantity());
@@ -109,4 +107,14 @@ public class StockService {
         movementsRepository.save(movement);
         return new StockResponseDTO(stock);
     };
+
+    public  void delete(Long id){
+        Stock stock = this.repository.findById(id).orElseThrow(() ->
+                new RuntimeException("STOCK LINE NOT FOUNDED")
+        );
+        Movement movement = new Movement(stock.getProduct(), stock.getQuantity(), MovementType.OUT);
+        movementsRepository.save(movement);
+
+        repository.delete(stock);
+    }
 }

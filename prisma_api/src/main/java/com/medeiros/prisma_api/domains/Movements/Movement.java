@@ -26,7 +26,7 @@ public class Movement {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "movement_type", nullable = false)
-    private MovementType movementType;
+    private MovementType type;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -37,13 +37,13 @@ public class Movement {
     public Movement(MovementRequestDTO dto, Product product) {
         this.product = product;
         this.quantity = dto.quantity();
-        this.movementType = dto.type();
+        this.type = dto.type();
     }
 
     public Movement(Product product, Integer quantity, MovementType movementType) {
         this.product = product;
         this.quantity = quantity;
-        this.movementType = movementType;
+        this.type = movementType;
     }
 
 

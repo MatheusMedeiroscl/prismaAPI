@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/prisma_api.iml" filepath="$PROJECT_DIR$/.idea/prisma_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/prismaAPI.iml" filepath="$PROJECT_DIR$/.idea/prismaAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prisma_api/prisma_api.iml" filepath="$PROJECT_DIR$/prisma_api/prisma_api.iml" />
     </modules>
   </component>
 </project>

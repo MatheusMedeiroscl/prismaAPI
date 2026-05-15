@@ -37,4 +37,15 @@ public class ProductController {
         ProductResponseDTO product = this.service.create(dto);
         return ResponseEntity.ok().body(product);
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> update(@RequestBody @Valid ProductRequestDTO dto, @PathVariable Long id){
+        ProductResponseDTO product = this.service.update(dto, id);
+        return ResponseEntity.ok().body(product);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        this.service.delete(id);
+    }
 }

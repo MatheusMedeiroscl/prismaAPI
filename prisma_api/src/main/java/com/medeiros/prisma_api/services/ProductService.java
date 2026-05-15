@@ -50,4 +50,8 @@ public class ProductService {
         this.repository.save(product);
         return new ProductResponseDTO(product);
     }
+
+    public void delete(Long id){
+        this.repository.deleteById(id);
+    }
 }

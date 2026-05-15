@@ -2,6 +2,7 @@ package com.medeiros.prisma_api.controllers;
 
 import com.medeiros.prisma_api.domains.stocks.StockRequestDTO;
 import com.medeiros.prisma_api.domains.stocks.StockResponseDTO;
+import com.medeiros.prisma_api.domains.stocks.StockStatus;
 import com.medeiros.prisma_api.services.StockService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,15 @@ public class StockController {
         if (dto.quantity() != null) {
              response = this.service.updateOrder(id, dto);
         }
-        if (dto.status() != null) {
+        if (dto.status() == StockStatus.AVAILABLE) {
              response = this.service.confirm(id);
         }
 
         return ResponseEntity.ok().body(response);
     };
+
+    @DeleteMapping("/{id}")
+    public void deleteStock (@PathVariable Long id){
+        this.service.delete(id);
+    }
 }
