@@ -23,7 +23,7 @@ public class SaleItem {
     private Long id;
 
     @ManyToOne
-    @Column(name = "product", nullable = false)
+    @JoinColumn(name = "product", nullable = false)
     private Product product;
 
     @Column(name = "quatity", nullable = false)
@@ -37,7 +37,7 @@ public class SaleItem {
 
     @ManyToOne
     @JoinColumn(name = "sale_id", nullable = false)
-    private Sale sales;
+    private Sale sale;
 
 
 
