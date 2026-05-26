@@ -32,7 +32,7 @@ public class Movement {
     private Integer quantity;
 
     @Column(name = "createAt")
-    LocalDate createdAt = LocalDate.now();
+    private LocalDate createdAt = LocalDate.now();
 
     public Movement(MovementRequestDTO dto, Product product) {
         this.product = product;

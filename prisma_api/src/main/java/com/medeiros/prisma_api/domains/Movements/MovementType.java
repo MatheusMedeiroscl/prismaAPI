@@ -1,5 +1,6 @@
 package com.medeiros.prisma_api.domains.Movements;
 
+import com.medeiros.prisma_api.domains.sales.SaleStatus;
 import com.medeiros.prisma_api.domains.stocks.StockStatus;
 
 public enum MovementType {
@@ -7,7 +8,8 @@ public enum MovementType {
     OUT("out"),
     ORDER("order"),
     RESERVED("reserved"),
-    ADJUSTMENT("adjustment");
+    ADJUSTMENT("adjustment"),
+    CANCEL("cancel"),;
 
     private final String moviment;
 
@@ -21,6 +23,13 @@ public enum MovementType {
         return switch (status){
             case ORDER -> ORDER;
             case AVAILABLE -> IN;
+        };
+    }
+    public static MovementType from(SaleStatus status){
+        return switch (status){
+            case PAID, PENDING -> OUT;
+            case RESERVED -> RESERVED;
+            case CANCELLED -> CANCEL;
         };
     }
 }

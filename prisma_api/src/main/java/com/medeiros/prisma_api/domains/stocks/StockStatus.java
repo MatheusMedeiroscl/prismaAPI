@@ -25,6 +25,7 @@ public enum StockStatus {
             case ORDER -> ORDER;
             case RESERVED -> null;
             case ADJUSTMENT -> null;
+            case  CANCEL -> null;
         };
     }
 }

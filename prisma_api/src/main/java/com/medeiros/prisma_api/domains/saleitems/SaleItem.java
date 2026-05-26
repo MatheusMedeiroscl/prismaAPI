@@ -40,5 +40,9 @@ public class SaleItem {
     private Sale sale;
 
 
-
+    public SaleItem(SaleItemRequestDTO dto, Product product) {
+        this.product = product;
+        this.quantity = dto.quantity();
+        this.salePrice = dto.salePrice();
+    }
 }

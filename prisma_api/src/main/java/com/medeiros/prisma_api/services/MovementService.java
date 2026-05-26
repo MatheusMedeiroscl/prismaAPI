@@ -50,11 +50,11 @@ public class MovementService {
         Movement movement = new Movement(dto, product);
         this.movementsRepository.save(movement);
 
-
-        if (dto.type() == MovementType.IN || dto.type() == MovementType.ORDER){
-            this.stockService.addQuantity(product, dto.quantity(), dto.type());
-        }else {
-            this.stockService.removeQuantity(product, dto.quantity(), dto.type());
+        switch (dto.type()){
+            case IN, ORDER, CANCEL ->
+                this.stockService.addQuantity(product, dto.quantity(), dto.type());
+            case OUT, RESERVED ->
+                this.stockService.removeQuantity(product, dto.quantity(), dto.type());
         }
 
         return new MovementResponseDTO(movement);
