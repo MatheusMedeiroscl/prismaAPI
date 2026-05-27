@@ -81,4 +81,48 @@ public class SaleService {
 
     };
 
+    public SaleResponseDTO update (Long id, SaleRequestDTO dto) {
+        Sale sale = this.saleRepository.findById(id).orElseThrow(() ->
+                new RuntimeException(
+                        "SALE NOT FOUND " +  id
+                )
+        );
+
+        if (dto.items() != null) {
+            sale.getItems().clear();
+
+            Integer totalQuantity = 0;
+            BigDecimal totalInCash = BigDecimal.ZERO;
+
+            for (SaleItemRequestDTO item : dto.items()) {
+                SaleItem request = this.saleItemService.build(item, dto.status());
+
+                request.setSale(sale);
+                totalQuantity += request.getQuantity();
+                BigDecimal itemTotal = request.getSalePrice()
+                        .multiply(BigDecimal.valueOf(request.getQuantity()));
+
+                totalInCash = totalInCash.add(itemTotal);
+
+                sale.getItems().add(request);
+
+            };
+            sale.setTotalQuantity(totalQuantity);
+            sale.setTotalCash(totalInCash);
+        }
+        if (dto.clientID() != null) {sale.setClient(
+                clientRepository.findById(dto.clientID()).orElseThrow(() ->
+                        new RuntimeException(
+                                "CLIENT NOT FOUNDED BY ID " + dto
+                        )
+                ));
+        }
+         if (dto.status() != null) {sale.setSaleStatus(dto.status());}
+         if (dto.method() != null) {sale.setPaymentMethod(dto.method());}
+         if (dto.dueDate() != null) {sale.setDueDate(dto.dueDate());}
+
+        this.saleRepository.save(sale);
+        return new SaleResponseDTO(sale);
+
+    }
 }

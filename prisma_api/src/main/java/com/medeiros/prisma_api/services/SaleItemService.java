@@ -13,6 +13,7 @@ import com.medeiros.prisma_api.repositories.SaleItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class SaleItemService {
@@ -38,6 +39,7 @@ public class SaleItemService {
 
         return new SaleItem(dto, product);
     }
+
 
 
 }

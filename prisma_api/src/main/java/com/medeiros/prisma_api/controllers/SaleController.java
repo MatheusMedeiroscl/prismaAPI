@@ -29,4 +29,10 @@ public class SaleController {
     public ResponseEntity<SaleResponseDTO> create(@RequestBody SaleRequestDTO dto){
         return  ResponseEntity.ok(service.create(dto));
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<SaleResponseDTO> update(@PathVariable Long id, @RequestBody SaleRequestDTO dto){
+        return ResponseEntity.ok(service.update(id,dto));
+    }
+
 }
