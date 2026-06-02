@@ -24,10 +24,13 @@ public class Client {
     private String cnpj;
     @Column(name = "address", nullable = false)
     private String address;
+    @Column(name = "email")
+    private String email;
 
     public Client(ClientRequestDTO dto) {
         this.storeName = dto.storeName();
         this.Owner = dto.owner();
+        this.email = dto.email();
         this.cnpj = dto.cnpj();
         this.address = dto.address();
     }

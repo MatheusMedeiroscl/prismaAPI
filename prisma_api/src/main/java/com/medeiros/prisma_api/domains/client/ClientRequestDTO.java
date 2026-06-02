@@ -7,6 +7,8 @@ public record ClientRequestDTO(
         String storeName,
         @NotEmpty
         String owner,
+        @NotEmpty
+        String email,
         String cnpj,
         String address
 ) {
