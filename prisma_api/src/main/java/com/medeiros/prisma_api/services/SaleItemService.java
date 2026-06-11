@@ -40,6 +40,18 @@ public class SaleItemService {
         return new SaleItem(dto, product);
     }
 
+    public void delete(SaleItem saleItem) {
+        Product product = this.productRepository.findById(saleItem.getId()).orElseThrow(() ->
+                new RuntimeException(
+                        "PRODUCT NOT FOUND" + saleItem.getId()
+                )
+        );
+
+        MovementRequestDTO movement = new MovementRequestDTO(saleItem.getId(), MovementType.CANCEL, saleItem.getQuantity());
+        this.movementService.create(movement);
+
+        saleItemRepository.delete(saleItem);
+    }
 
 
 }

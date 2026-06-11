@@ -45,6 +45,7 @@ public class ClientService {
 
         if (dto.storeName() != null) {client.setStoreName(dto.storeName());}
         if (dto.owner() != null) {client.setOwner(dto.owner());}
+        if (dto.email() != null) {client.setEmail(dto.email());}
         if (dto.cnpj() != null) {client.setCnpj(dto.cnpj());}
         if (dto.address() != null) {client.setAddress(dto.address());}
 

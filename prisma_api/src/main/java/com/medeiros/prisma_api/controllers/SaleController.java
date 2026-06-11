@@ -35,4 +35,9 @@ public class SaleController {
         return ResponseEntity.ok(service.update(id,dto));
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        service.delete(id);
+    }
+
 }

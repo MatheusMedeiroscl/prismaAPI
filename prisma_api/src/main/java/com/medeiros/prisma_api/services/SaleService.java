@@ -1,5 +1,7 @@
 package com.medeiros.prisma_api.services;
 
+import com.medeiros.prisma_api.domains.Movements.Movement;
+import com.medeiros.prisma_api.domains.Movements.MovementType;
 import com.medeiros.prisma_api.domains.client.Client;
 import com.medeiros.prisma_api.domains.saleitems.SaleItem;
 import com.medeiros.prisma_api.domains.saleitems.SaleItemRequestDTO;
@@ -7,6 +9,7 @@ import com.medeiros.prisma_api.domains.sales.Sale;
 import com.medeiros.prisma_api.domains.sales.SaleRequestDTO;
 import com.medeiros.prisma_api.domains.sales.SaleResponseDTO;
 import com.medeiros.prisma_api.repositories.ClientRepository;
+import com.medeiros.prisma_api.repositories.MovementsRepository;
 import com.medeiros.prisma_api.repositories.SaleRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +23,13 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final SaleItemService saleItemService;
     private final ClientRepository clientRepository;
+    private final MovementsRepository movementsRepository;
 
-
-    public SaleService(SaleRepository saleRepository, SaleItemService saleItemService, ClientRepository clientRepository) {
+    public SaleService(SaleRepository saleRepository, SaleItemService saleItemService, ClientRepository clientRepository, MovementsRepository movementsRepository) {
         this.saleRepository = saleRepository;
         this.saleItemService = saleItemService;
         this.clientRepository = clientRepository;
+        this.movementsRepository = movementsRepository;
     }
 
     public List<SaleResponseDTO> findAll() {
@@ -70,6 +74,7 @@ public class SaleService {
 
             totalInCash = totalInCash.add(itemTotal);
             items.add(request);
+
         };
 
         sale.setItems(items);
@@ -123,6 +128,21 @@ public class SaleService {
 
         this.saleRepository.save(sale);
         return new SaleResponseDTO(sale);
+
+    }
+
+    public void delete (Long id) {
+        Sale sale = this.saleRepository.findById(id).orElseThrow(() ->
+                new RuntimeException(
+                        "SALE NOT FOUND " +  id
+                )
+        );
+
+        for (SaleItem item: sale.getItems()) {
+            this.saleItemService.delete(item);
+        }
+
+        this.saleRepository.delete(sale);
 
     }
 }

@@ -9,7 +9,7 @@ public enum MovementType {
     ORDER("order"),
     RESERVED("reserved"),
     ADJUSTMENT("adjustment"),
-    CANCEL("cancel"),;
+    CANCEL("cancel");
 
     private final String moviment;
 
