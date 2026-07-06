@@ -5,11 +5,12 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public record SaleItemResponseDTO(
-        Long id, String product, String category, Integer quantity, BigDecimal salePrice, LocalDate createdAt) {
+        Long id, String product, Long productId, String category, Integer quantity, BigDecimal salePrice, LocalDate createdAt) {
     public SaleItemResponseDTO(SaleItem saleItem){
         this(
                 saleItem.getId(),
                 saleItem.getProduct().getName(),
+                saleItem.getProduct().getId(),
                 saleItem.getProduct().getCategory(),
                 saleItem.getQuantity(),
                 saleItem.getSalePrice(),

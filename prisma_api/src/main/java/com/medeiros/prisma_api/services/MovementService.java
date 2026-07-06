@@ -43,7 +43,7 @@ public class MovementService {
 
     @Transactional
     public MovementResponseDTO create (MovementRequestDTO dto){
-        Product product = findProduct(dto.idProduct());
+        Product product = findProduct(dto.productId());
         log.info(String.valueOf(dto.type()));
 
         // salva a movimentação

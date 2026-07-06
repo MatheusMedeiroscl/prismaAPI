@@ -10,6 +10,7 @@ import java.util.List;
 public record SaleResponseDTO(
         Long id,
         String client,
+        Long clientId,
         LocalDate creatAt,
         PaymentMethod paymentMethod,
         SaleStatus saleStatus,
@@ -23,6 +24,7 @@ public record SaleResponseDTO(
         this(
                 sale.getId(),
                 sale.getClient().getStoreName(),
+                sale.getClient().getId(),
                 sale.getCreateAt(),
                 sale.getPaymentMethod(),
                 sale.getSaleStatus(),

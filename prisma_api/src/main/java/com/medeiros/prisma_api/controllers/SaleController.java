@@ -3,9 +3,11 @@ package com.medeiros.prisma_api.controllers;
 import com.medeiros.prisma_api.domains.sales.SaleRequestDTO;
 import com.medeiros.prisma_api.domains.sales.SaleResponseDTO;
 import com.medeiros.prisma_api.services.SaleService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,6 +40,13 @@ public class SaleController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         service.delete(id);
+    }
+
+    @GetMapping("/export")
+    public void exportSalesForClient(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment: filename=sale-clients.xlsx");
+        this.service.exportSalesForClient(response.getOutputStream());
     }
 
 }

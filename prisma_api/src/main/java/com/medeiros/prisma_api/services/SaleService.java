@@ -1,5 +1,6 @@
 package com.medeiros.prisma_api.services;
 
+import ch.qos.logback.core.OutputStreamAppender;
 import com.medeiros.prisma_api.domains.Movements.Movement;
 import com.medeiros.prisma_api.domains.Movements.MovementType;
 import com.medeiros.prisma_api.domains.client.Client;
@@ -11,8 +12,15 @@ import com.medeiros.prisma_api.domains.sales.SaleResponseDTO;
 import com.medeiros.prisma_api.repositories.ClientRepository;
 import com.medeiros.prisma_api.repositories.MovementsRepository;
 import com.medeiros.prisma_api.repositories.SaleRepository;
+import jakarta.servlet.ServletOutputStream;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +54,41 @@ public class SaleService {
             )
         );
             return  new SaleResponseDTO(sale);
+    }
+
+    public void exportSalesForClient(OutputStream outputStream) throws IOException {
+        final List<Sale> sales = this.saleRepository.findAll();
+
+        final Workbook workbook = new XSSFWorkbook();
+        final Sheet sheet = workbook.createSheet("Sales-client");
+
+        final Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("ID");
+        header.createCell(1).setCellValue("Cliente");
+        header.createCell(2).setCellValue("Dt Venda");
+        header.createCell(3).setCellValue("Status");
+        header.createCell(4).setCellValue("Pagamento");
+        header.createCell(5).setCellValue("Quantidade");
+        header.createCell(6).setCellValue("Total");
+        header.createCell(7).setCellValue("Vencimento");
+
+        int rowNum = 1;
+        for (Sale sale: sales){
+            final Row row = sheet.createRow(rowNum++);
+
+            row.createCell(0).setCellValue(sale.getId());
+            row.createCell(1).setCellValue(sale.getClient().getStoreName());
+            row.createCell(2).setCellValue(sale.getCreateAt());
+            row.createCell(3).setCellValue(sale.getSaleStatus().name());
+            row.createCell(4).setCellValue(sale.getPaymentMethod().name());
+            row.createCell(5).setCellValue(sale.getTotalQuantity());
+            row.createCell(6).setCellValue(sale.getTotalCash().doubleValue());
+            row.createCell(7).setCellValue(sale.getDueDate());
+        }
+
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
     }
 
     public SaleResponseDTO create (SaleRequestDTO dto) {

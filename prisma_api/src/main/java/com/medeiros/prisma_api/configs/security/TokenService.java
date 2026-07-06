@@ -5,8 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.medeiros.prisma_api.domains.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +17,10 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public static Logger log =  LoggerFactory.getLogger(TokenService.class);
 
 
     public String generateToken(User user){
         try{
-            log.info("SECRET KEY VALIDATE:" + secret);
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
             return JWT.create()

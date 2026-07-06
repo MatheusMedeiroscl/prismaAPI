@@ -55,8 +55,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             log.error("TOKEN NOT FOUNDED");
             return null;
         }
-
-        log.error("TOKEN IS FOUNDED");
         return authHeader.replace("Bearer ", "");
     }
 }

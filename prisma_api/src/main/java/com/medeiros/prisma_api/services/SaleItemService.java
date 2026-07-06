@@ -41,15 +41,17 @@ public class SaleItemService {
     }
 
     public void delete(SaleItem saleItem) {
-        Product product = this.productRepository.findById(saleItem.getId()).orElseThrow(() ->
+        Product product = this.productRepository.findById(saleItem.getProduct().getId()).orElseThrow(() ->
                 new RuntimeException(
-                        "PRODUCT NOT FOUND" + saleItem.getId()
+                        "PRODUCT NOT FOUND" + saleItem.getProduct().getId()
                 )
         );
-
-        MovementRequestDTO movement = new MovementRequestDTO(saleItem.getId(), MovementType.CANCEL, saleItem.getQuantity());
+        MovementRequestDTO movement = new MovementRequestDTO(
+                saleItem.getProduct().getId(), // <-- aqui também
+                MovementType.CANCEL,
+                saleItem.getQuantity()
+        );
         this.movementService.create(movement);
-
         saleItemRepository.delete(saleItem);
     }
 
