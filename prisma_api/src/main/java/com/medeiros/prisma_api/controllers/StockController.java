@@ -4,10 +4,12 @@ import com.medeiros.prisma_api.domains.stocks.StockRequestDTO;
 import com.medeiros.prisma_api.domains.stocks.StockResponseDTO;
 import com.medeiros.prisma_api.domains.stocks.StockStatus;
 import com.medeiros.prisma_api.services.StockService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -43,4 +45,12 @@ public class StockController {
     public void deleteStock (@PathVariable Long id){
         this.service.delete(id);
     }
+
+    @GetMapping("/export")
+    public void exportSalesForClient(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment: filename=stock.xlsx");
+        this.service.exportStock(response.getOutputStream());
+    }
+
 }

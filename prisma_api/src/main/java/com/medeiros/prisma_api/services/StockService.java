@@ -9,10 +9,17 @@ import com.medeiros.prisma_api.domains.stocks.StockResponseDTO;
 import com.medeiros.prisma_api.domains.stocks.StockStatus;
 import com.medeiros.prisma_api.repositories.MovementsRepository;
 import com.medeiros.prisma_api.repositories.StockRepository;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -116,5 +123,41 @@ public class StockService {
         movementsRepository.save(movement);
 
         repository.delete(stock);
+    }
+
+    public void exportStock(OutputStream outputStream) throws IOException {
+        final List<Stock> stocks = this.repository.findAll();
+
+        final Workbook workbook = new XSSFWorkbook();
+        final Sheet sheet = workbook.createSheet("stock");
+
+        final Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("ID");
+        header.createCell(1).setCellValue("Produto");
+        header.createCell(2).setCellValue("Categoria");
+        header.createCell(3).setCellValue("Quantidade");
+        header.createCell(4).setCellValue("Total");
+        header.createCell(5).setCellValue("Data");
+        header.createCell(6).setCellValue("Status");
+
+        int rowNum = 1;
+        for(Stock stock: stocks){
+            final Row row = sheet.createRow(rowNum++);
+            Double total = stock.getProduct().getCostPrice()
+                    .multiply(BigDecimal.valueOf(stock.getQuantity()))
+                    .doubleValue();
+            
+            row.createCell(0).setCellValue(stock.getId());
+            row.createCell(1).setCellValue(stock.getProduct().getName());
+            row.createCell(2).setCellValue(stock.getProduct().getCategory());
+            row.createCell(3).setCellValue(stock.getQuantity());
+            row.createCell(4).setCellValue(total);
+            row.createCell(5).setCellValue(stock.getCreatedAt());
+            row.createCell(6).setCellValue(stock.getStatus().name());
+        }
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+
     }
 }
