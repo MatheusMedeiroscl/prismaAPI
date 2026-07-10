@@ -38,7 +38,7 @@ public class ClientController {
         return ResponseEntity.ok().body(this.service.create(clientRequestDTO));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> update (@PathVariable Long id ,@RequestBody ClientRequestDTO clientRequestDTO){
         return ResponseEntity.ok().body(this.service.update(id, clientRequestDTO));
     }
